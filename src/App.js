@@ -1,6 +1,8 @@
 import './App.css';
 import React from 'react';
 
+const AUDIO = 'https://sampleswap.org/samples-ghost/SOUND%20EFFECTS%20and%20NOISES/Bleeps%20Blips%20Blonks%20Blarts%20and%20Zaps/463[kb]beep-beep-bopbop-bop-bop.wav.mp3'
+
 class App extends React.Component {
   constructor(props){
     super(props);
@@ -19,9 +21,12 @@ class App extends React.Component {
     this.sessionIncrement = this.sessionIncrement.bind(this);
     this.startStop = this.startStop.bind(this);
     this.updateTimer = this.updateTimer.bind(this);
+    this.changeTimer = this.changeTimer.bind(this);
+    this.beep = this.beep.bind(this);
     this.timer = 0;
   }
   reset(){
+    document.getElementById('beep').pause();
     clearInterval(this.timer);
     this.setState({
       breakLength: 5,
@@ -35,7 +40,7 @@ class App extends React.Component {
   breakDecrement(){
     this.setState(() => {
       let currentValue = this.state.breakLength;
-      let newValue = currentValue <= 0 ? 0 : currentValue - 1;
+      let newValue = currentValue <= 1 ? 1 : currentValue - 1;
       return {breakLength: newValue};
     });
   }
@@ -49,11 +54,11 @@ class App extends React.Component {
   sessionDecrement(){
     this.setState(() => {
       let currentValue = this.state.sessionLength;
-      let newValue = currentValue <= 0 ? 0 : currentValue - 1;
+      let newValue = currentValue <= 1 ? 1 : currentValue - 1;
       if(!this.state.startStop){
         return {
           sessionLength: newValue,
-          minsLeft: newValue,
+          minLeft: newValue,
           secLeft: 0
         };
       } else {
@@ -68,7 +73,7 @@ class App extends React.Component {
       if(!this.state.startStop){
         return {
           sessionLength: newValue,
-          minsLeft: newValue,
+          minLeft: newValue,
           secLeft: 0
         };
       } else {
@@ -91,15 +96,39 @@ class App extends React.Component {
     if(this.state.startStop){
       this.setState(prevState => {
         if(prevState.secLeft === '00'){
-          return{
-            minLeft: ('0' + (Number(prevState.minLeft) - 1)).slice(-2),
-            secLeft: '59'
-          };
+          if(prevState.minLeft ==='00'){
+            this.beep();
+            this.changeTimer();
+          } else {
+            return{
+              minLeft: ('0' + (Number(prevState.minLeft) - 1)).slice(-2),
+              secLeft: '59'
+            };
+          }
         } else {
           return {secLeft: ('0' + (Number(prevState.secLeft) - 1)).slice(-2)};
         }
       });
     }
+  }
+  changeTimer(){
+    if(this.state.timerLabel == 'Session'){
+      this.setState({
+        timerLabel: 'Break',
+        minLeft: this.state.breakLength.toString(),
+        secLeft: '00'
+      });
+    } else{
+      this.setState({
+        timerLabel: 'Session',
+        minLeft: this.state.sessionLength.toString(),
+        secLeft: '00'
+      });
+    }
+  }
+  beep(){
+    let beep = document.getElementById('beep');
+    beep.play();
   }
   render() {
     return (
@@ -116,6 +145,7 @@ class App extends React.Component {
         <div id='time-left'>{this.state.minLeft}:{this.state.secLeft}</div>
         <button id='start_stop' onClick={this.startStop}/>
         <button id='reset' onClick={this.reset}/>
+        <audio id='beep' src={AUDIO}/>
       </div>
     );
   }
