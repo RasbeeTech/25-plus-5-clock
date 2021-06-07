@@ -43,7 +43,7 @@ class App extends React.Component {
     this.setState(() => {
       let currentValue = this.state.breakLength;
       let newValue = currentValue <= 1 ? 1 : currentValue - 1;
-      if(!this.state.startStop && this.state.timerLabel == 'Break'){
+      if(!this.state.startStop && this.state.timerLabel === 'Break'){
         return {
           breakLength: newValue,
           minLeft: ('0' + newValue).slice(-2),
@@ -58,7 +58,7 @@ class App extends React.Component {
     this.setState(() => {
       let currentValue = this.state.breakLength;
       let newValue = currentValue >= 60 ? 60 : currentValue + 1;
-      if(!this.state.startStop && this.state.timerLabel == 'Break'){
+      if(!this.state.startStop && this.state.timerLabel === 'Break'){
         return {
           breakLength: newValue,
           minLeft: ('0' + newValue).slice(-2),
@@ -73,7 +73,7 @@ class App extends React.Component {
     this.setState(() => {
       let currentValue = this.state.sessionLength;
       let newValue = currentValue <= 1 ? 1 : currentValue - 1;
-      if(!this.state.startStop && this.state.timerLabel == 'Session'){
+      if(!this.state.startStop && this.state.timerLabel === 'Session'){
         return {
           sessionLength: newValue,
           minLeft: ('0' + newValue).slice(-2),
@@ -88,7 +88,7 @@ class App extends React.Component {
     this.setState(() => {
       let currentValue = this.state.sessionLength;
       let newValue = currentValue >= 60 ? 60 : currentValue + 1;
-      if(!this.state.startStop && this.state.timerLabel == 'Session'){
+      if(!this.state.startStop && this.state.timerLabel === 'Session'){
         return {
           sessionLength: newValue,
           minLeft: ('0' + newValue).slice(-2),
@@ -113,10 +113,10 @@ class App extends React.Component {
   updateTimer(){
     if(this.state.startStop){
       this.setState(prevState => {
-        if(prevState.minLeft === '00' && prevState.secLeft == '01'){
+        if(prevState.minLeft === '00' && prevState.secLeft === '01'){
           this.beep();
         }
-        if(prevState.minLeft === '00' && prevState.secLeft == '00'){
+        if(prevState.minLeft === '00' && prevState.secLeft === '00'){
           this.changeTimer();
         } else if(prevState.secLeft === '00'){
             return{
@@ -130,7 +130,7 @@ class App extends React.Component {
     }
   }
   changeTimer(){
-    if(this.state.timerLabel == 'Session'){
+    if(this.state.timerLabel === 'Session'){
       this.setState({
         timerLabel: 'Break',
         minLeft: ('0' + this.state.breakLength).slice(-2),
@@ -150,7 +150,8 @@ class App extends React.Component {
   }
   render() {
     return (
-      <div className="App">
+      <div className="container text-center text-light py-4 w-75">
+        <div className='display-4 pb-4 fw-bold'>25 + 5 Clock</div>
         <Display 
           breakDecrement = {this.breakDecrement}
           breakIncrement = {this.breakIncrement}
@@ -177,15 +178,35 @@ class App extends React.Component {
 class Display extends React.Component{
   render(){
     return (
-      <div>
-        <p id='break-label'>Break Length</p>
-        <p id='session-label'>Session Length</p>
-        <button id='break-decrement' onClick={this.props.breakDecrement}></button>
-        <button id='session-decrement' onClick={this.props.sessionDecrement}></button>
-        <button id='break-increment' onClick={this.props.breakIncrement}></button>
-        <button id='session-increment' onClick={this.props.sessionIncrement}></button>
-        <div id='break-length'>{this.props.breakLength}</div>
-        <div id='session-length'>{this.props.sessionLength}</div>
+      <div id='display' className='row'>
+        <div className='col-6 pb-3'>
+          <div id='break-label' className='pb-2 h3'>Break Length</div>
+          <div className='row'>
+            <a id='break-increment' className ='col-5 pt-2 text-reset' onClick={this.props.breakIncrement}>
+              <i className='fa fa-2x fa-arrow-up float-end text-primary'/>
+            </a>
+            <div id='break-length' className='col-2 pt-1 h1 d-flex justify-content-center'>
+              {this.props.breakLength}
+            </div>
+            <a id='break-decrement' className ='col-5 pt-2 text-reset' onClick={this.props.breakDecrement}>
+              <i className='fa fa-2x fa-arrow-down float-start text-danger'/>
+            </a>
+          </div>
+        </div>
+        <div className='col-6 pb-3'>
+          <div id='session-label' className='pb-2 h3'>Session Length</div>
+          <div className='row'>
+            <a id='session-increment' className ='col-5 pt-2 text-reset' onClick={this.props.sessionIncrement}>
+              <i className='fa fa-2x fa-arrow-up float-end text-primary'/>
+            </a>
+            <div id='session-length' className='col-2 pt-1 h1 d-flex justify-content-center'>
+              {this.props.sessionLength}
+            </div>
+            <a id='session-decrement' className ='col-5 pt-2 text-reset' onClick={this.props.sessionDecrement}>
+              <i className='fa fa-2x fa-arrow-down float-start text-danger'/>
+            </a>
+          </div>
+        </div>
       </div>
     );
   }
@@ -194,9 +215,9 @@ class Display extends React.Component{
 class Clock extends React.Component{
   render(){
     return (
-      <div>
-        <div id='timer-label'>{this.props.timerLabel}</div>
-        <div id='time-left'>{this.props.minLeft + ':' + this.props.secLeft}</div>
+      <div id='clock' className='container w-50 border border-3 rounded-pill'>
+        <div id='timer-label' className='display-6 py-2'>{this.props.timerLabel}</div>
+        <div id='time-left' className='display-1 pb-3 fw-bolder'>{this.props.minLeft + ':' + this.props.secLeft}</div>
       </div>
     );
   }
@@ -205,9 +226,14 @@ class Clock extends React.Component{
 class Controls extends React.Component{
   render(){
     return(
-      <div>
-        <button id='start_stop' onClick={this.props.startStop}/>
-        <button id='reset' onClick={this.props.reset}/>
+      <div id='controls' className='pt-4'>
+        <a id='start_stop' className='m-3 text-reset' onClick={this.props.startStop}>
+          <i className='fa fa-2x fa-play text-primary'/>
+          <i className='fa fa-2x fa-pause text-primary'/>
+        </a>
+        <a id='reset' className='m-3 text-reset' onClick={this.props.reset}>
+          <i className='fa fa-2x fa-refresh text-danger'/>
+        </a>
       </div>
     );
   }
