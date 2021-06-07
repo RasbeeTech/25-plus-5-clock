@@ -151,19 +151,63 @@ class App extends React.Component {
   render() {
     return (
       <div className="App">
+        <Display 
+          breakDecrement = {this.breakDecrement}
+          breakIncrement = {this.breakIncrement}
+          sessionDecrement = {this.sessionDecrement}
+          sessionIncrement = {this.sessionIncrement}
+          breakLength = {this.state.breakLength}
+          sessionLength = {this.state.sessionLength}
+        />
+        <Clock 
+          minLeft = {this.state.minLeft}
+          secLeft = {this.state.secLeft}
+          timerLabel = {this.state.timerLabel}
+        />
+        <Controls 
+          startStop = {this.startStop}
+          reset = {this.reset}
+        />
+        <audio id='beep' src={beepAudio}/>
+      </div>
+    );
+  }
+}
+
+class Display extends React.Component{
+  render(){
+    return (
+      <div>
         <p id='break-label'>Break Length</p>
         <p id='session-label'>Session Length</p>
-        <button id='break-decrement' onClick={this.breakDecrement}></button>
-        <button id='session-decrement' onClick={this.sessionDecrement}></button>
-        <button id='break-increment' onClick={this.breakIncrement}></button>
-        <button id='session-increment' onClick={this.sessionIncrement}></button>
-        <div id='break-length'>{this.state.breakLength}</div>
-        <div id='session-length'>{this.state.sessionLength}</div>
-        <div id='timer-label'>{this.state.timerLabel}</div>
-        <div id='time-left'>{this.state.minLeft + ':' + this.state.secLeft}</div>
-        <button id='start_stop' onClick={this.startStop}/>
-        <button id='reset' onClick={this.reset}/>
-        <audio id='beep' src={beepAudio}/>
+        <button id='break-decrement' onClick={this.props.breakDecrement}></button>
+        <button id='session-decrement' onClick={this.props.sessionDecrement}></button>
+        <button id='break-increment' onClick={this.props.breakIncrement}></button>
+        <button id='session-increment' onClick={this.props.sessionIncrement}></button>
+        <div id='break-length'>{this.props.breakLength}</div>
+        <div id='session-length'>{this.props.sessionLength}</div>
+      </div>
+    );
+  }
+}
+
+class Clock extends React.Component{
+  render(){
+    return (
+      <div>
+        <div id='timer-label'>{this.props.timerLabel}</div>
+        <div id='time-left'>{this.props.minLeft + ':' + this.props.secLeft}</div>
+      </div>
+    );
+  }
+}
+
+class Controls extends React.Component{
+  render(){
+    return(
+      <div>
+        <button id='start_stop' onClick={this.props.startStop}/>
+        <button id='reset' onClick={this.props.reset}/>
       </div>
     );
   }
