@@ -1,4 +1,3 @@
-import './App.css';
 import React from 'react';
 import beepAudio from './beep.mp3'
 
